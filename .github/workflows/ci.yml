@@ -1,0 +1,44 @@
+
+name: CI Hospital Vida Salud
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        servicio:
+          - eureka-server-t2
+          - pacientes-service
+          - citas-service
+          - notificaciones-service
+          - api-gateway
+
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: '**/pom.xml'
+
+      - name: Compilar y ejecutar pruebas
+        working-directory: ${{ matrix.servicio }}
+        env:
+          DB_PASSWORD: ci_prueba_temporal
+          SPRING_CLOUD_DISCOVERY_ENABLED: 'false'
+          SPRING_RABBITMQ_LISTENER_SIMPLE_AUTO_STARTUP: 'false'
+        run: |
+          chmod +x mvnw
+          ./mvnw --batch-mode verify
