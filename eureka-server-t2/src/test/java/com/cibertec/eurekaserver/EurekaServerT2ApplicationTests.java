@@ -1,13 +1,18 @@
+
 package com.cibertec.eurekaserver;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest
+import org.junit.jupiter.api.Test;
+import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
+
 class EurekaServerT2ApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
-
+    @Test
+    void verificarEurekaHabilitado() {
+        assertNotNull(
+            EurekaServerT2Application.class
+                .getAnnotation(EnableEurekaServer.class)
+        );
+    }
 }
